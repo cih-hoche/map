@@ -1,0 +1,16 @@
+{
+    "name": "HocheMap",
+    "short_name": "HocheMap",
+    "start_url": "/",
+    "display": "fullscreen",
+    "background_color": "#002bb8",
+    "theme_color": "#002bb8",
+    "orientation": "portrait-primary",
+    "icons": [
+        {
+            "src": "/icon512.png",
+            "sizes": "512x512"
+        }
+    ]
+  }
+  

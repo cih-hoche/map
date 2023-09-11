@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <!-- Pour avoir une PWA -->
+        <!-- <link rel="manifest" href="manifest.json" />
+        <script>
+            if('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('/serviceWorker.js', { scope: '/' });
+            }
+            </script> -->
+        <!-- Del cache si reste de PWA -->
+        <script>
+            if ('serviceWorker' in navigator) {
+          caches.keys().then(function(cacheNames) {
+            cacheNames.forEach(function(cacheName) {
+              caches.delete(cacheName);
+            });
+          });
+        }
+        </script>
+        <link rel="stylesheet" href="/css/style.css">
+        <link rel="shortcut icon" href="/icon512.png">
+        <script src="js/dijkstra.js"></script>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"/>
+        <meta name="og:title" content="HocheMap">
+        <meta name="og:image" content="/hoche.png">
+        <link rel="image_src" href="/hoche.png" />
+        <meta name="og:description" content="Développé par le Club Informatique, ce site propose une carte interactive du lycée Hoche.">
+        <title>HocheMap</title>
+    </head>
+    <body>
+        <div id="d_input">
+            <div id="div_imgs_left">
+                <img id="dep" src="images/strt.png" alt="">
+                <img id="pts" src="images/pts.png" alt="">
+                <img id="arv" src="images/arv.png" alt="">
+            </div>
+            <div id="se">
+                <label for="from"></label><input id="from" onclick="show_search_panel('from')" placeholder="Départ">
+                <label for="to"></label><input id="to" onclick="show_search_panel('to')" placeholder="Destination">
+            </div>
+            <div id="div_imgs_right">
+                <button id="bt_change"><img id="ch" src="images/flch.png" alt="Inverser"></button>
+            </div>
+        </div>
+        <div id="div_carte"></div>
+
+        <div id="panneau_search">
+            <div id="head">
+                <button id="bt_back_search" onclick="close_search_panel('none')"><img src="images/retour.svg" alt="Retour"></button>
+                <label for="input_search"></label><input type="text" id="input_search" placeholder="Cherchez un lieu" oninput="search_event()"/>
+                <button id="bt_clear_search"><img src="images/croix.svg" alt="Effacer le texte"></button>
+            </div>
+            <div id="foot">
+                <button onclick="close_search_panel(document.getElementById('first').innerHTML);" id="first"><b><li></li></b></button>
+                <button onclick="close_search_panel('Vie scolaire lycée');" id="search_0"><li>Vie scolaire lycée</li></button>
+                <button onclick="close_search_panel('Vie scolaire collège');" id="search_1"><li>Vie scolaire collège</li></button>
+                <button onclick="close_search_panel('CDI Collège');" id="search_2"><li>CDI Collège</li></button>
+                <button onclick="close_search_panel('CDI Lycée');" id="search_3"><li>CDI Lycée</li></button>
+                <button onclick="close_search_panel('CPE');" id="search_4"><li>CPE</li></button>
+                <button onclick="close_search_panel('Secrétariat');" id="search_5"><li>Secrétariat</li></button>
+                <button onclick="close_search_panel('Amphithéâtre');" id="search_6"><li>Amphithéâtre</li></button>
+                <button onclick="close_search_panel('Entrée');" id="search_7"><li>Entrée</li></button>
+                <button onclick="close_search_panel('Infièrmerie');" id="search_8"><li>Infirmerie</li></button>
+                <button onclick="close_search_panel('Foyer');" id="search_9"><li>Foyer du lycée</li></button>
+                <button onclick="close_search_panel('Réfectoire');" id="search_10"><li>Réfectoire</li></button>
+                <button onclick="close_search_panel('CIH');" id="search_12"><li>CIH</li></button>
+                <button onclick="close_search_panel('Salle de musique');" id="search_13"><li>Salle de musique</li></button>
+                <button onclick="close_search_panel('Salle des actes');" id="search_14"><li>Salle des actes</li></button>
+                <button onclick="close_search_panel('Salle des arts');" id="search_15"><li>Salle des arts</li></button>
+                <button onclick="close_search_panel('Gymnase');" id="search_16"><li>Gymnase</li></button>
+                <button onclick="close_search_panel('Intendance');" id="search_17"><li>Intendance</li></button>
+                <button onclick="close_search_panel('Salle des professeurs');" id="search_18"><li>Salle des professeurs</li></button>
+                <p></p>
+            </div>
+        </div>
+        <div id="back_filter"></div>
+        <div id="main_explication">
+            <h1 id="h1_expli"><img src="/icon512.png" alt="" id="logo_expli"> HocheMap</h1>
+
+            <h2 id="h2_expli">Se déplacer</h2>
+            <table id="table_expli">
+                <tr>
+                    <td valign="top"><img src="images/grab.png" class="img_expli" alt="Main" /></td>
+                    <td valign="middle">Faire glisser la carte avec la souris pour la <b>déplacer</b></td>
+                </tr>
+                <tr>
+                    <td valign="top"><img src="images/loupe.png" class="img_expli" alt="Loupe" /></td>
+                    <td valign="middle">Utilisez la molette pour <b>zoomer/dézommer</b></td>
+                </tr>
+                <tr>
+                    <td valign="top"><img src="images/esc.png" class="img_expli" alt="Escalier" /></td>
+                    <td valign="middle">Cliquez sur les <b>escaliers</b> pour changer d'étage</td>
+                </tr>
+                <tr>
+                    <td valign="top"><img src="images/change_bat.png" class="img_expli" alt="Flèche" /></td>
+                    <td valign="middle">Cliquez sur les <b>flèches</b> pour changer de bâtiment</td>
+                </tr>
+                <tr><td valign="top"><img src="images/anc.svg" class="img_expli" alt="Image Histoire" /></td><td valign="middle">Cliquez pour voir des informations historiques</td></tr>
+            </table>
+
+            <button id="bt_expli" onclick="show_expli()">Commencer la navigation</button>
+        </div>
+        <div id="blanc"></div>
+        <div id="histo">
+            <img id="bt_back_histo" src="images/croix.svg" onclick="del_center_expli();" alt="Fermer">
+
+            <p id="t" style="flex: 1; display: contents;"></p>
+        </div>
+
+        <script>document.getElementById('first').style.display = 'none';
+        document.getElementById('histo').style.display = 'none';
+        document.getElementById('blanc').style.display = 'none';</script>
+        <script src="/js/index.js"></script>
+    </body>
+</html>
