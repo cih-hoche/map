@@ -121,7 +121,7 @@ function reload(bat, chemin, dec=null) {
         window.location.href = '/cih';
     } else {
         let xmlhttp = new XMLHttpRequest();
-        xmlhttp.open("GET", '/tuiles/' + bat + '.svg');
+        xmlhttp.open("GET", 'tuiles/' + bat + '.svg');
         xmlhttp.send();
         xmlhttp.onload = function () {
             if (xmlhttp.status !== 200) {
